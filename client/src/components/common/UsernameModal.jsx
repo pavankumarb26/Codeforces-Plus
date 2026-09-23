@@ -35,6 +35,8 @@ export const UsernameModal = ({ isOpen, handle, onSave, onClose }) => {
       if (res.data?.success && res.data?.data?.info) {
         onSave(res.data.data.info.handle || cleanHandle);
         setError('');
+      } else if (typeof res.data === 'string' && res.data.includes('<!DOCTYPE html>')) {
+        setError(`Server Configuration Error: The API server returned an HTML page. Please verify API deployment routing.`);
       } else {
         setError(`Codeforces user '${cleanHandle}' not found. Please verify spelling.`);
       }
