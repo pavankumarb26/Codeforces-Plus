@@ -39,8 +39,13 @@ export const UsernameModal = ({ isOpen, handle, onSave, onClose }) => {
         setError(`Codeforces user '${cleanHandle}' not found. Please verify spelling.`);
       }
     } catch (err) {
-      const msg = err.response?.data?.message || `Codeforces user '${cleanHandle}' not found or API unreachable.`;
-      setError(msg);
+      if (!err.response) {
+        setError(`Network Connection Error: Unable to reach the API server. Please ensure the backend is running.`);
+      } else if (err.response.status === 404) {
+        setError(`Codeforces user '${cleanHandle}' not found. Please verify spelling.`);
+      } else {
+        setError(err.response?.data?.message || `Codeforces user '${cleanHandle}' not found or API unreachable.`);
+      }
     } finally {
       setLoading(false);
     }
