@@ -47,17 +47,19 @@ export const Sidebar = ({ mobileOpen, setMobileOpen }) => {
         }`}
       >
         {/* Logo / Header */}
-        <div className="h-16 px-6 flex items-center justify-between border-b border-dark-border">
-          <NavLink to="/" className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400 font-heading font-bold text-lg">
-              CF
-            </div>
-            <div>
+        <div className="h-16 px-5 flex items-center justify-between border-b border-dark-border">
+          <NavLink to="/" className="flex items-center gap-3 group">
+            <img
+              src="/logo/codeforces-plus-icon.png"
+              alt="Codeforces Plus Logo"
+              className="h-9 w-auto object-contain shrink-0 group-hover:scale-105 transition-transform"
+            />
+            <div className="flex flex-col">
               <span className="font-heading font-bold text-base tracking-tight text-white block leading-none">
                 Codeforces
               </span>
-              <span className="text-[10px] uppercase font-mono tracking-widest text-sky-400 font-semibold">
-                Platform
+              <span className="text-[11px] font-bold font-mono text-purple-400 tracking-wider block mt-0.5">
+                Plus
               </span>
             </div>
           </NavLink>

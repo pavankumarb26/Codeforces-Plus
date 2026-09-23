@@ -17,6 +17,18 @@ export const Header = ({ setMobileOpen }) => {
           <Menu className="w-5 h-5" />
         </button>
 
+        {/* Mobile Compact Brand */}
+        <div className="flex lg:hidden items-center gap-2">
+          <img
+            src="/logo/codeforces-plus-icon.png"
+            alt="Codeforces Plus Logo"
+            className="h-7 w-auto object-contain"
+          />
+          <span className="font-heading font-bold text-sm text-white">
+            Codeforces <span className="text-purple-400">Plus</span>
+          </span>
+        </div>
+
         <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-400">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           <span>LIVE CODEFORCES SYNC</span>

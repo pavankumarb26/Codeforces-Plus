@@ -70,8 +70,12 @@ export const UsernameModal = ({ isOpen, handle, onSave, onClose }) => {
 
         {/* Modal Header */}
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/30 text-sky-400 flex items-center justify-center mx-auto mb-3">
-            <User className="w-6 h-6" />
+          <div className="flex justify-center mb-3">
+            <img
+              src="/logo/codeforces-plus-icon.png"
+              alt="Codeforces Plus Logo"
+              className="h-12 w-auto object-contain"
+            />
           </div>
           <h2 className="text-xl sm:text-2xl font-bold font-heading text-white tracking-tight flex items-center justify-center gap-2">
             Welcome to Codeforces Plus <Sparkles className="w-5 h-5 text-amber-400" />
