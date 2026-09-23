@@ -116,7 +116,7 @@ const OFFICIAL_EDITORIAL_MAP = {
   1825: 'https://codeforces.com/blog/entry/115901', // Codeforces Round 870 (Div. 2) Editorial
   1823: 'https://codeforces.com/blog/entry/115502', // Codeforces Round 868 (Div. 2) Editorial
   1822: 'https://codeforces.com/blog/entry/115370', // Codeforces Round 867 (Div. 3) Editorial
-  1821: 'https://codeforces.com/blog/entry/115237 font-mono', // Educational Codeforces Round 147 Editorial
+  1821: 'https://codeforces.com/blog/entry/115237', // Educational Codeforces Round 147 Editorial
   1820: 'https://codeforces.com/blog/entry/115104', // Codeforces Round 865 (Div. 2) Editorial
   1818: 'https://codeforces.com/blog/entry/115635', // Codeforces Round 869 (Div. 2) Editorial
   1816: 'https://codeforces.com/blog/entry/114971', // Codeforces Round 865 (Div. 2) Editorial
@@ -169,7 +169,7 @@ const OFFICIAL_EDITORIAL_MAP = {
   1753: 'https://codeforces.com/blog/entry/108442', // Codeforces Round 829 (Div. 1) Editorial
   1750: 'https://codeforces.com/blog/entry/108843', // Codeforces Round 832 (Div. 2) Editorial
   1749: 'https://codeforces.com/blog/entry/108310', // Educational Codeforces Round 138 Editorial
-  1748: 'https://codeforces.com/bblog/entry/109111', // Codeforces Round 833 (Div. 2) Editorial
+  1748: 'https://codeforces.com/blog/entry/109111', // Codeforces Round 833 (Div. 2) Editorial
   1747: 'https://codeforces.com/blog/entry/108710', // Codeforces Round 832 (Div. 2) Editorial
   1746: 'https://codeforces.com/blog/entry/108177', // Codeforces Global Round 23 Editorial
   1744: 'https://codeforces.com/blog/entry/108044', // Codeforces Round 828 (Div. 3) Editorial
@@ -341,6 +341,8 @@ const OFFICIAL_EDITORIAL_MAP = {
 export const getEditorialUrl = (contestId) => {
   const cid = Number(contestId);
   if (!cid) return null;
-  return OFFICIAL_EDITORIAL_MAP[cid] || `https://codeforces.com/contest/${cid}`;
+  const url = OFFICIAL_EDITORIAL_MAP[cid];
+  if (!url) return null;
+  return url.trim();
 };
 

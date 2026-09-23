@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Settings as SettingsIcon, Save, User, Moon, Sun, CheckCircle2 } from 'lucide-react';
 import { useUser } from '../context/UserContext';
-import { settingsApi } from '../services/api';
+import { settingsApi, profileApi } from '../services/api';
 import { ErrorAlert } from '../components/common/ErrorAlert';
 
 export const Settings = () => {
@@ -15,7 +15,11 @@ export const Settings = () => {
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Fetch settings from MongoDB
+  useEffect(() => {
+    setInputHandle(handle);
+  }, [handle]);
+
+  // Fetch settings from backend if handle exists
   useEffect(() => {
     const fetchSettings = async () => {
       try {
@@ -48,19 +52,29 @@ export const Settings = () => {
         return;
       }
 
-      const res = await settingsApi.updateSettings(handle, {
-        newHandle: cleanHandle,
-        theme: selectedTheme,
-        itemsPerPage
-      });
-
-      if (res.data?.success) {
-        changeHandle(cleanHandle);
-        setTheme(selectedTheme);
-        setSuccessMsg('Settings saved successfully in MongoDB!');
+      // Validate handle with Codeforces API first
+      const valRes = await profileApi.getProfile(cleanHandle);
+      if (!valRes.data?.success || !valRes.data?.data?.info) {
+        setErrorMsg(`Codeforces user '${cleanHandle}' not found. Please check spelling.`);
+        setLoading(false);
+        return;
       }
+
+      const validHandle = valRes.data.data.info.handle || cleanHandle;
+
+      if (handle) {
+        await settingsApi.updateSettings(handle, {
+          newHandle: validHandle,
+          theme: selectedTheme,
+          itemsPerPage
+        }).catch(() => null);
+      }
+
+      changeHandle(validHandle);
+      setTheme(selectedTheme);
+      setSuccessMsg(`Handle updated to @${validHandle} successfully!`);
     } catch (err) {
-      setErrorMsg(err.response?.data?.message || 'Failed to update settings');
+      setErrorMsg(err.response?.data?.message || `Codeforces user '${inputHandle.trim()}' not found.`);
     } finally {
       setLoading(false);
     }
@@ -74,7 +88,7 @@ export const Settings = () => {
           <SettingsIcon className="w-6 h-6 text-sky-400" /> Platform Settings
         </h1>
         <p className="text-sm text-slate-400 mt-1">
-          Configure default Codeforces account handle, visual theme, and database preferences
+          Configure default Codeforces account handle, visual theme, and preferences
         </p>
       </div>
 
@@ -102,7 +116,7 @@ export const Settings = () => {
               value={inputHandle}
               onChange={(e) => setInputHandle(e.target.value)}
               className="w-full max-w-md bg-dark-bg border border-dark-border rounded-lg px-3.5 py-2.5 text-sm font-mono text-white focus:outline-none focus:border-sky-500/50"
-              placeholder="e.g. pavankumar2614"
+              placeholder="e.g. tourist"
               required
             />
             <p className="text-xs text-slate-500 mt-1.5">

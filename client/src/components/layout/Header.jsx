@@ -1,21 +1,11 @@
-import React, { useState } from 'react';
-import { Menu, Search, User, Bookmark, ExternalLink } from 'lucide-react';
+import React from 'react';
+import { Menu, User, Bookmark } from 'lucide-react';
 import { useUser } from '../../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 
 export const Header = ({ setMobileOpen }) => {
-  const { handle, changeHandle, savedProblemsList } = useUser();
-  const [isEditingHandle, setIsEditingHandle] = useState(false);
-  const [handleInput, setHandleInput] = useState(handle);
+  const { handle, openUsernameModal, savedProblemsList } = useUser();
   const navigate = useNavigate();
-
-  const handleHandleSubmit = (e) => {
-    e.preventDefault();
-    if (handleInput.trim()) {
-      changeHandle(handleInput.trim());
-      setIsEditingHandle(false);
-    }
-  };
 
   return (
     <header className="h-16 bg-dark-card/80 backdrop-blur-md border-b border-dark-border sticky top-0 z-30 px-4 sm:px-8 flex items-center justify-between">
@@ -45,41 +35,21 @@ export const Header = ({ setMobileOpen }) => {
         </button>
 
         {/* Handle Badge / Switcher */}
-        {isEditingHandle ? (
-          <form onSubmit={handleHandleSubmit} className="flex items-center gap-1">
-            <input
-              type="text"
-              value={handleInput}
-              onChange={(e) => setHandleInput(e.target.value)}
-              className="bg-dark-bg border border-sky-500/50 rounded-lg px-2.5 py-1 text-xs font-mono text-white focus:outline-none w-36"
-              placeholder="Codeforces handle"
-              autoFocus
-            />
-            <button
-              type="submit"
-              className="px-2 py-1 bg-sky-500 text-slate-950 font-semibold rounded text-xs hover:bg-sky-400 transition-colors"
-            >
-              Save
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsEditingHandle(false)}
-              className="px-2 py-1 text-slate-400 hover:text-white text-xs"
-            >
-              Cancel
-            </button>
-          </form>
-        ) : (
-          <button
-            onClick={() => setIsEditingHandle(true)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-dark-bg border border-dark-border hover:border-slate-600 text-xs font-mono text-slate-200 transition-all"
-            title="Click to switch handle"
-          >
-            <User className="w-3.5 h-3.5 text-slate-400" />
-            <span className="font-semibold text-white">@{handle}</span>
-            <span className="text-[10px] text-sky-400 hover:underline ml-1">Change</span>
-          </button>
-        )}
+        <button
+          onClick={openUsernameModal}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-dark-bg border border-dark-border hover:border-sky-500/40 text-xs font-mono text-slate-200 transition-all cursor-pointer"
+          title="Click to change Codeforces username"
+        >
+          <User className="w-3.5 h-3.5 text-sky-400" />
+          {handle ? (
+            <>
+              <span className="font-semibold text-white">@{handle}</span>
+              <span className="text-[10px] text-sky-400 font-sans hover:underline ml-1">Change</span>
+            </>
+          ) : (
+            <span className="font-semibold text-sky-400">Enter Username</span>
+          )}
+        </button>
       </div>
     </header>
   );

@@ -7,12 +7,13 @@ import { CardSkeleton } from '../components/common/Skeleton';
 import { ErrorAlert } from '../components/common/ErrorAlert';
 
 export const Profile = () => {
-  const { handle } = useUser();
+  const { handle, openUsernameModal } = useUser();
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const fetchProfile = async () => {
+    if (!handle) return;
     setLoading(true);
     setError(null);
     try {
@@ -30,6 +31,9 @@ export const Profile = () => {
   useEffect(() => {
     if (handle) {
       fetchProfile();
+    } else {
+      setProfileData(null);
+      setLoading(false);
     }
   }, [handle]);
 
@@ -46,18 +50,29 @@ export const Profile = () => {
             <User className="w-6 h-6 text-sky-400" /> User Profile Integration
           </h1>
           <p className="text-sm text-slate-400 mt-1">
-            Official Codeforces profile metrics for <span className="font-mono text-sky-400">@{handle}</span>
+            Official Codeforces profile metrics for <span className="font-mono text-sky-400">@{handle || 'User'}</span>
           </p>
         </div>
 
-        <a
-          href={`https://codeforces.com/profile/${handle}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-300 hover:bg-sky-500/20 text-xs font-semibold transition-all self-start sm:self-auto"
-        >
-          View on Codeforces <ExternalLink className="w-3.5 h-3.5" />
-        </a>
+        <div className="flex items-center gap-2.5 self-start sm:self-auto">
+          <button
+            onClick={openUsernameModal}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-dark-card border border-dark-border hover:border-sky-500/40 text-slate-200 text-xs font-semibold transition-all cursor-pointer"
+          >
+            <User className="w-3.5 h-3.5 text-sky-400" /> Change Username
+          </button>
+
+          {handle && (
+            <a
+              href={`https://codeforces.com/profile/${handle}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-300 hover:bg-sky-500/20 text-xs font-semibold transition-all"
+            >
+              View on Codeforces <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          )}
+        </div>
       </div>
 
       {error && <ErrorAlert message={error} onRetry={fetchProfile} />}

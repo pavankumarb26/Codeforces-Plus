@@ -4,9 +4,10 @@ import { useUser } from '../context/UserContext';
 import { getRankColor } from '../utils/formatters';
 import { TableSkeleton } from '../components/common/Skeleton';
 import { EmptyState } from '../components/common/EmptyState';
+import { getProgramizCompilerUrl } from '../utils/programiz';
 
 export const Saved = () => {
-  const { handle, savedProblemsList, loadingSaved, toggleSaveProblem } = useUser();
+  const { handle, savedProblemsList, loadingSaved, toggleSaveProblem, compilerLanguage } = useUser();
   const [search, setSearch] = useState('');
 
   const filteredSaved = savedProblemsList.filter((item) => {
@@ -19,6 +20,8 @@ export const Saved = () => {
     );
   });
 
+  const programizUrl = getProgramizCompilerUrl(compilerLanguage);
+
   return (
     <div className="space-y-6">
       {/* Title */}
@@ -28,7 +31,7 @@ export const Saved = () => {
             <Bookmark className="w-6 h-6 text-sky-400 fill-sky-400/20" /> Saved Bookmarks
           </h1>
           <p className="text-sm text-slate-400 mt-1">
-            Persisted problem bookmarks stored in MongoDB for <span className="font-mono text-sky-400">@{handle}</span>
+            Persisted problem bookmarks stored in MongoDB for <span className="font-mono text-sky-400">@{handle || 'User'}</span>
           </p>
         </div>
 
@@ -122,6 +125,16 @@ export const Saved = () => {
                           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 border border-sky-500/30 font-sans text-xs transition-colors"
                         >
                           Codeforces <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+
+                        <a
+                          href={programizUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 font-sans text-xs transition-colors font-medium"
+                          title="Test code on official Programiz online compiler"
+                        >
+                          Test on Programiz <ExternalLink className="w-3.5 h-3.5" />
                         </a>
 
                         <button

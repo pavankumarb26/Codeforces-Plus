@@ -19,9 +19,10 @@ import { getRankColor } from '../utils/formatters';
 import { TableSkeleton } from '../components/common/Skeleton';
 import { ErrorAlert } from '../components/common/ErrorAlert';
 import { EmptyState } from '../components/common/EmptyState';
+import { PROGRAMIZ_LANGUAGES, getProgramizCompilerUrl } from '../utils/programiz';
 
 export const Problems = () => {
-  const { handle, isProblemSaved, toggleSaveProblem } = useUser();
+  const { handle, isProblemSaved, toggleSaveProblem, compilerLanguage, setCompilerLanguage } = useUser();
 
   const [problems, setProblems] = useState([]);
   const [availableTags, setAvailableTags] = useState([]);
@@ -98,6 +99,9 @@ export const Problems = () => {
     setPage(1);
   };
 
+  const programizUrl = getProgramizCompilerUrl(compilerLanguage);
+  const selectedLangObj = PROGRAMIZ_LANGUAGES.find(l => l.id === compilerLanguage) || { name: 'Python' };
+
   return (
     <div className="space-y-6">
       {/* Page Title */}
@@ -111,8 +115,26 @@ export const Problems = () => {
           </p>
         </div>
 
-        <div className="text-xs font-mono text-slate-400 bg-dark-card px-3 py-1.5 rounded-lg border border-dark-border self-start sm:self-auto">
-          Total Found: <span className="font-bold text-sky-400">{totalCount}</span>
+        <div className="flex items-center gap-3 self-start sm:self-auto">
+          {/* Compiler Language Selector */}
+          <div className="flex items-center gap-1.5 bg-dark-card px-3 py-1.5 rounded-lg border border-dark-border text-xs font-mono">
+            <span className="text-slate-400">Compiler:</span>
+            <select
+              value={compilerLanguage}
+              onChange={(e) => setCompilerLanguage(e.target.value)}
+              className="bg-transparent font-semibold text-purple-300 focus:outline-none cursor-pointer"
+            >
+              {PROGRAMIZ_LANGUAGES.map((lang) => (
+                <option key={lang.id} value={lang.id} className="bg-dark-card text-white">
+                  {lang.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="text-xs font-mono text-slate-400 bg-dark-card px-3 py-1.5 rounded-lg border border-dark-border">
+            Total Found: <span className="font-bold text-sky-400">{totalCount}</span>
+          </div>
         </div>
       </div>
 
@@ -165,7 +187,7 @@ export const Problems = () => {
             className="bg-dark-bg border border-dark-border rounded-lg px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-sky-500/50 font-mono"
           >
             <option value="">All User Status</option>
-            <option value="solved">Solved by @{handle}</option>
+            {handle && <option value="solved">Solved by @{handle}</option>}
             <option value="attempted">Attempted (Unsolved)</option>
             <option value="unsolved">Unattempted</option>
           </select>
@@ -345,6 +367,16 @@ export const Problems = () => {
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 border border-sky-500/30 font-sans text-xs transition-colors"
                           >
                             Problem <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+
+                          <a
+                            href={programizUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 border border-purple-500/30 font-sans text-xs transition-colors font-medium"
+                            title={`Test code on Programiz official ${selectedLangObj.name} online compiler`}
+                          >
+                            Test on Programiz <ExternalLink className="w-3.5 h-3.5" />
                           </a>
 
                           <a

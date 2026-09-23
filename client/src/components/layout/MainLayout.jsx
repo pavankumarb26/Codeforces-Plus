@@ -2,12 +2,22 @@ import React, { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
+import { UsernameModal } from '../common/UsernameModal';
+import { useUser } from '../../context/UserContext';
 
 export const MainLayout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { handle, isUsernameModalOpen, changeHandle, closeUsernameModal } = useUser();
 
   return (
     <div className="min-h-screen bg-dark-bg text-slate-100 font-body flex">
+      <UsernameModal
+        isOpen={isUsernameModalOpen}
+        handle={handle}
+        onSave={changeHandle}
+        onClose={closeUsernameModal}
+      />
+
       {/* Persistent Sidebar */}
       <Sidebar mobileOpen={mobileOpen} setMobileOpen={setMobileOpen} />
 

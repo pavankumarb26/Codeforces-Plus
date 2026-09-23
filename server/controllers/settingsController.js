@@ -5,7 +5,10 @@ import { memoryStore } from '../utils/memoryStore.js';
 export const getSettings = async (req, res) => {
   try {
     const { handle } = req.params;
-    const userHandle = (handle || 'pavankumar2614').toLowerCase();
+    if (!handle) {
+      return res.status(400).json({ success: false, message: 'Handle is required' });
+    }
+    const userHandle = handle.toLowerCase();
 
     if (getIsMongoConnected()) {
       let settings = await UserSetting.findOne({ handle: userHandle });

@@ -6,8 +6,7 @@ const userSettingSchema = new mongoose.Schema({
     required: true,
     unique: true,
     trim: true,
-    lowercase: true,
-    default: 'pavankumar2614'
+    lowercase: true
   },
   theme: {
     type: String,

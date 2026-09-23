@@ -1,19 +1,47 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { settingsApi, savedApi } from '../services/api';
+import { savedApi } from '../services/api';
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [handle, setHandle] = useState(() => {
-    return localStorage.getItem('cf_user_handle') || 'pavankumar2614';
+    return localStorage.getItem('cf_user_handle') || '';
   });
+
+  const [isUsernameModalOpen, setIsUsernameModalOpen] = useState(() => {
+    return !localStorage.getItem('cf_user_handle');
+  });
+
+  const [compilerLanguage, setCompilerLanguageState] = useState(() => {
+    return localStorage.getItem('cf_compiler_lang') || 'python';
+  });
+
   const [savedProblemsMap, setSavedProblemsMap] = useState(new Map());
   const [loadingSaved, setLoadingSaved] = useState(false);
   const [theme, setTheme] = useState('dark');
 
+  const setCompilerLanguage = (lang) => {
+    if (!lang) return;
+    setCompilerLanguageState(lang);
+    localStorage.setItem('cf_compiler_lang', lang);
+  };
+
+  const openUsernameModal = () => {
+    setIsUsernameModalOpen(true);
+  };
+
+  const closeUsernameModal = () => {
+    if (handle) {
+      setIsUsernameModalOpen(false);
+    }
+  };
+
   // Load saved problems when handle changes
   const refreshSavedProblems = async (currentHandle = handle) => {
-    if (!currentHandle) return;
+    if (!currentHandle) {
+      setSavedProblemsMap(new Map());
+      return;
+    }
     setLoadingSaved(true);
     try {
       const res = await savedApi.getSaved(currentHandle);
@@ -35,6 +63,10 @@ export const UserProvider = ({ children }) => {
     if (handle) {
       localStorage.setItem('cf_user_handle', handle);
       refreshSavedProblems(handle);
+      setIsUsernameModalOpen(false);
+    } else {
+      setIsUsernameModalOpen(true);
+      setSavedProblemsMap(new Map());
     }
   }, [handle]);
 
@@ -43,6 +75,7 @@ export const UserProvider = ({ children }) => {
     const cleanHandle = newHandle.trim();
     setHandle(cleanHandle);
     localStorage.setItem('cf_user_handle', cleanHandle);
+    setIsUsernameModalOpen(false);
   };
 
   const isProblemSaved = (problemId) => {
@@ -50,6 +83,10 @@ export const UserProvider = ({ children }) => {
   };
 
   const toggleSaveProblem = async (problemData) => {
+    if (!handle) {
+      openUsernameModal();
+      return false;
+    }
     const problemId = `${problemData.contestId}-${problemData.index}`;
     if (isProblemSaved(problemId)) {
       // Remove
@@ -97,6 +134,11 @@ export const UserProvider = ({ children }) => {
       value={{
         handle,
         changeHandle,
+        isUsernameModalOpen,
+        openUsernameModal,
+        closeUsernameModal,
+        compilerLanguage,
+        setCompilerLanguage,
         savedProblemsMap,
         savedProblemsList: Array.from(savedProblemsMap.values()),
         loadingSaved,
