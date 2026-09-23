@@ -152,9 +152,30 @@ export const Submissions = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-dark-border/50">
-                {filteredSubmissions.map((sub) => (
-                  <tr key={sub.id} className="hover:bg-dark-hover/40 transition-colors">
-                    <td className="p-4 text-slate-400 font-mono">#{sub.id}</td>
+                {filteredSubmissions.map((sub) => {
+                  const submissionId = sub.id || sub.submissionId;
+                  const contestId = sub.contestId || sub.problem?.contestId;
+                  const submissionUrl = contestId && submissionId
+                    ? `https://codeforces.com/contest/${contestId}/submission/${submissionId}`
+                    : null;
+
+                  return (
+                    <tr key={sub.id} className="hover:bg-dark-hover/40 transition-colors">
+                      <td className="p-4 text-slate-400 font-mono">
+                        {submissionUrl ? (
+                          <a
+                            href={submissionUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sky-400 hover:text-sky-300 hover:underline inline-flex items-center gap-1 transition-colors"
+                          >
+                            <span>#{submissionId}</span>
+                            <ExternalLink className="w-3 h-3 text-slate-400 shrink-0" />
+                          </a>
+                        ) : (
+                          <span>#{submissionId || '-'}</span>
+                        )}
+                      </td>
 
                     <td className="p-4 font-sans font-medium text-slate-200">
                       <a
@@ -188,8 +209,9 @@ export const Submissions = () => {
                     </td>
 
                     <td className="p-4 text-right text-slate-400">{formatDate(sub.creationTimeSeconds)}</td>
-                  </tr>
-                ))}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
